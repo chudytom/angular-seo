@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SeoService } from '../../services/seo.service';
 
 @Component({
@@ -14,15 +14,18 @@ export class DetailsComponent implements OnInit {
     'Punkt 3 pomocy prawnej w BibliotecePublicznej w MAgdalence',
     'GOPS w Przeworsku',
     'Gminny Ośrodek Pomocy Społecznej w Borkowicach',
-  ]
-  constructor(private seoService: SeoService, private router: Router) { }
+  ];
+  constructor(
+    private seoService: SeoService,
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.seoService.updateTitle('Title for details page');
     this.seoService.updateDescription('Description for details page');
     this.seoService.updateCanonicalUrl(window.location.href);
 
-    const randomIndex =  Math.floor(Math.random() * this.details.length);
+    const randomIndex = Math.floor(Math.random() * this.details.length);
     const selectedItem = this.details[randomIndex];
     this.seoService.updateDisplayedUrlForDetails(selectedItem);
   }

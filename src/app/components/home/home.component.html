@@ -1,1 +1,5 @@
-<p>Home page</p>
+<div>
+    <div *ngIf='helpFilter.city'>Miasto: {{helpFilter.city}}</div>
+    <div *ngIf='helpFilter.helpKind'>Rodzaj pomocy: {{helpFilter.helpKind}}</div>
+    <div *ngIf='helpFilter.helpTopic'>Temat pomocy: {{helpFilter.helpTopic}}</div>
+</div>

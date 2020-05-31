@@ -1,7 +1,8 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, Location } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { HelpFilter } from '../models/help-filter';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class SeoService {
     private meta: Meta,
     private router: Router,
     private route: ActivatedRoute,
+    private location: Location
   ) { }
 
   public updateTitle(title: string) {
@@ -23,23 +25,29 @@ export class SeoService {
     this.meta.updateTag({ name: 'description', content: desc });
   }
 
-  updateDisplayedUrlForDetails(details: string) {
-    this.router.navigate([], {
-      relativeTo: this.route,
-
-      skipLocationChange: true,
-    })
+  public updateDisplayedUrlForDetails(details: string) {
+    this.location.go(`/details/${this.convertSpacesToDashes(details)}`);
   }
 
-  public updateDisplayedUrlForFilterData(city?: string, helpKind?: string, helpTopic?: string) {
+  private convertSpacesToDashes(str: string) {
+    return str.replace(/\s+/g, '-').toLowerCase();
+  }
+
+  public updateDisplayedUrlForFilterData(filter: HelpFilter) {
+    const queryParams: Params = {};
+    if (!!filter.city) {
+      queryParams['miasto'] = this.convertSpacesToDashes(filter.city);
+    }
+    if (!!filter.helpKind) {
+      queryParams['rodzaj-pomocy'] = this.convertSpacesToDashes(filter.helpKind);
+    }
+    if (!!filter.helpTopic) {
+      queryParams['temat-pomocy'] = this.convertSpacesToDashes(filter.helpTopic);
+    }
     this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        miasto: 'city',
-      },
+      queryParams,
       queryParamsHandling: 'merge',
-      skipLocationChange: true,
-    })
+    });
   }
 
   public updateCanonicalUrl(url: string) {

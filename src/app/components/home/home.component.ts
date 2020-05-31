@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HelpFilter } from '../../models/help-filter';
+import { NavigationService } from '../../services/navigation.service';
 import { SeoService } from '../../services/seo.service';
 
 @Component({
@@ -8,34 +10,42 @@ import { SeoService } from '../../services/seo.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  public helpFilter: HelpFilter;
+
   private cities = ['Warszawa', 'Gdańsk', 'Kraków'];
 
   private helpKinds = [
     'Pomoc materialna',
     'Pomoc finansowa',
     'Pomoc noclegowa'
-  ]
+  ];
 
   private helpTopics = [
     'odzież',
     'logopeda',
     'przestępstwo'
-  ]
+  ];
 
 
-  constructor(private seoService: SeoService, private router: Router) {
+  constructor(
+    private seoService: SeoService,
+    private router: Router,
+    private navigation: NavigationService) {
 
-    this.seoService.updateTitle('Title for home page');
-    this.seoService.updateDescription('Description for home page');
-    this.seoService.updateCanonicalUrl(router.url);
-    this.seoService.updateDisplayedUrlForFilterData(
-      this.getRandomCity(),
-      this.getRandomHelpKind(),
-      this.getRandomHelpTopic());
+
   }
 
   ngOnInit(): void {
+    this.helpFilter = this.navigation.getHelpFilterFromRoue();
 
+    this.seoService.updateTitle('Title for home page');
+    this.seoService.updateDescription('Description for home page');
+    this.seoService.updateCanonicalUrl(this.router.url);
+    this.seoService.updateDisplayedUrlForFilterData({
+      city: this.getRandomCity(),
+      helpKind: this.getRandomHelpKind(),
+      helpTopic: this.getRandomHelpTopic()
+    });
   }
 
   private getRandomCity(): string {
